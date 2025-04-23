@@ -24,7 +24,6 @@ import { CommonModule } from '@angular/common';
   template: `
     <mat-card>
       <mat-card-header class="header">
-        <img src="assets/favicon.svg" alt="Zod4Vibe Logo" class="header-logo">
         <mat-card-title>Products</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -112,12 +111,6 @@ import { CommonModule } from '@angular/common';
       display: flex;
       align-items: center;
       margin-bottom: 16px;
-    }
-
-    .header-logo {
-      width: 32px;
-      height: 32px;
-      margin-right: 16px;
     }
 
     mat-card-title {

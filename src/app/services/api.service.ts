@@ -48,8 +48,7 @@ export class ApiService {
       .pipe(
         map(response => {
           try {
-            const validated = ProductsResponseSchema.parse(response);
-            return validated;
+            return ProductsResponseSchema.parse(response);
           } catch (error) {
             throw error instanceof z.ZodError ? error : new Error('Invalid response format');
           }
@@ -67,6 +66,8 @@ export class ApiService {
       .pipe(
         map(response => {
           try {
+            console.log('Response:', response);
+            console.log('Parsed response:', PostsResponseSchema.parse(response));
             return PostsResponseSchema.parse(response);
           } catch (error) {
             throw error instanceof z.ZodError ? error : new Error('Invalid response format');
