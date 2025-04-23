@@ -18,7 +18,7 @@ export const ProductSchema = z.object({
   discountPercentage: z.number().min(0).max(100, { message: "Discount percentage must be between 0 and 100" }),
   rating: z.number().min(0).max(5, { message: "Rating must be between 0 and 5" }),
   stock: z.number().int().nonnegative({ message: "Stock must be a valid non-negative integer" }),
-  brand: z.string().min(1, { message: "Brand is required and must be a string" }),
+  brand: z.string().min(1, { message: "Brand is required and must be a string" }).optional(),
   category: z.string().min(1, { message: "Category is required and must be a string" }),
   thumbnail: z.string().url({ message: "Thumbnail must be a valid URL" }),
   images: z.array(z.string().url({ message: "Each image must be a valid URL" }))

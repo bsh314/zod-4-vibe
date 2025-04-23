@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   template: `
     <mat-toolbar color="primary">
+      <img src="assets/favicon.svg" alt="Zod4Vibe Logo" class="app-logo">
       <span>Zod4Vibe</span>
       <div class="spacer"></div>
       <a mat-button routerLink="/home" routerLinkActive="active">
@@ -46,6 +47,17 @@ import { MatIconModule } from '@angular/material/icon';
 
     .active {
       background: rgba(255, 255, 255, 0.1);
+    }
+
+    .app-logo {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+    }
+
+    mat-toolbar {
+      display: flex;
+      align-items: center;
     }
   `]
 })

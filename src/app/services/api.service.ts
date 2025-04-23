@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Observable, map, catchError, throwError, tap } from 'rxjs';
 import { ProductsResponse, ProductsResponseSchema } from '../models/product.model';
 import { PostsResponse, PostsResponseSchema } from '../models/post.model';
+import { z } from 'zod';
+
+export type SortOrder = 'asc' | 'desc';
 
 @Injectable({
   providedIn: 'root'
@@ -12,17 +15,46 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  getProducts(skip: number = 0, limit: number = 10): Observable<ProductsResponse> {
-    const params = new HttpParams()
+  private handleError(error: HttpErrorResponse | z.ZodError) {
+    let errorMessage = 'An error occurred';
+    
+    if (error instanceof z.ZodError) {
+      errorMessage = error.errors.map(err => err.message).join(', ');
+    } else if (error instanceof HttpErrorResponse) {
+      errorMessage = error.error?.message || error.message;
+    }
+    
+    return throwError(() => new Error(errorMessage));
+  }
+
+  getProducts(
+    skip: number = 0, 
+    limit: number = 10, 
+    sortBy?: string, 
+    order: SortOrder = 'asc'
+  ): Observable<ProductsResponse> {
+    let params = new HttpParams()
       .set('skip', skip.toString())
       .set('limit', limit.toString());
+    
+    // Add sorting if specified
+    if (sortBy) {
+      params = params
+        .set('sortBy', sortBy)
+        .set('order', order);
+    }
 
     return this.http.get<ProductsResponse>(`${this.baseUrl}/products`, { params })
       .pipe(
         map(response => {
-          const validatedData = ProductsResponseSchema.parse(response);
-          return validatedData;
-        })
+          try {
+            const validated = ProductsResponseSchema.parse(response);
+            return validated;
+          } catch (error) {
+            throw error instanceof z.ZodError ? error : new Error('Invalid response format');
+          }
+        }),
+        catchError(error => this.handleError(error))
       );
   }
 
@@ -34,9 +66,13 @@ export class ApiService {
     return this.http.get<PostsResponse>(`${this.baseUrl}/posts`, { params })
       .pipe(
         map(response => {
-          const validatedData = PostsResponseSchema.parse(response);
-          return validatedData;
-        })
+          try {
+            return PostsResponseSchema.parse(response);
+          } catch (error) {
+            throw error instanceof z.ZodError ? error : new Error('Invalid response format');
+          }
+        }),
+        catchError(error => this.handleError(error))
       );
   }
 } 
