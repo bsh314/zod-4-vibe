@@ -22,7 +22,7 @@
     "material-icons": "^1.13.12",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zod": "4.0.0-beta.20250420T053007",
+    "zod": "^3.22.4",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
